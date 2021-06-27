@@ -68,9 +68,13 @@ public class CSVUtilTest {
     void rective_filtrarNacionalidad(){
         List<Player> list = CsvUtilFile.getPlayers();
         Flux<Player> listFlux = Flux.fromStream(list.parallelStream()).cache();
-        listFlux.toStream().toString();
+        Mono<Map<String, Collection<Player>>>listaMapeada = listFlux.map(player -> {
+                    player.national = player.national.toUpperCase(Locale.ROOT);
+                    return player;
+                }).collectMultimap(Player::getNational);
+
+        System.out.println(listaMapeada.subscribe(Player->System.out.println(Player)));
+        //listFilter.block().forEach((key,values) -> values.forEach(valplayer-> System.out.println(valplayer.toString())));
     }
-
-
 
 }
