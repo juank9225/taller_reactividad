@@ -71,10 +71,11 @@ public class CSVUtilTest {
         Mono<Map<String, Collection<Player>>>listaMapeada = listFlux.map(player -> {
                     player.national = player.national.toUpperCase(Locale.ROOT);
                     return player;
-                }).collectMultimap(Player::getNational);
+                }).distinct()
+                .sort((player1, player2) -> Math.max(player1.winners, player2.winners))
+                .collectMultimap(Player::getNational);
 
         System.out.println(listaMapeada.subscribe(Player->System.out.println(Player)));
-        //listFilter.block().forEach((key,values) -> values.forEach(valplayer-> System.out.println(valplayer.toString())));
     }
 
 }
